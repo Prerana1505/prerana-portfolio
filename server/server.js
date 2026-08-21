@@ -1,7 +1,6 @@
 import http from "http";
 
-const PORT = 5000;
-
+const PORT = process.env.PORT || 5000;
 const sendJSON = (res, statusCode, data) => {
   res.writeHead(statusCode, {
     "Content-Type": "application/json",
