@@ -204,6 +204,7 @@ if (
     sendJSON(res, 200, {
       success: true,
       message: "Portfolio backend is running!",
+      api: "/api",
     });
 
     return;
@@ -219,8 +220,8 @@ if (
 
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(
-    `Backend running at http://localhost:${PORT}`
+    `Backend running on port ${PORT}`
   );
 });
