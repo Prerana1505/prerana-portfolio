@@ -193,7 +193,21 @@ if (
 
   return;
 }
+// --------------------------------
+  // Root route
+  // --------------------------------
 
+  if (
+    req.method === "GET" &&
+    req.url === "/"
+  ) {
+    sendJSON(res, 200, {
+      success: true,
+      message: "Portfolio backend is running!",
+    });
+
+    return;
+  }
   // --------------------------------
   // 404
   // --------------------------------
