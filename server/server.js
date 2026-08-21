@@ -10,6 +10,7 @@ const sendJSON = (res, statusCode, data) => {
 };
 
 const server = http.createServer(async(req, res) => {
+    console.log("Request:", req.method, req.url);
 
   // CORS
   res.setHeader(
