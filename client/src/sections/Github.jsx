@@ -9,42 +9,27 @@ import {
 } from "react-icons/fi";
 
 function Github() {
-  const [repositories, setRepositories] =
-    useState([]);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState(false);
+  const [repositories, setRepositories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchRepositories = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/github/repos"
+          "https://api.github.com/users/Prerana1505/repos?sort=updated&per_page=6"
         );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch GitHub repositories");
+        }
 
         const data = await response.json();
 
-        if (!response.ok || !data.success) {
-          throw new Error(
-            "Failed to fetch repositories"
-          );
-        }
-
-        setRepositories(
-          data.repositories
-        );
-
+        setRepositories(data);
       } catch (error) {
-        console.error(
-          "GitHub fetch error:",
-          error
-        );
-
+        console.error("GitHub fetch error:", error);
         setError(true);
-
       } finally {
         setLoading(false);
       }
@@ -54,12 +39,10 @@ function Github() {
   }, []);
 
   return (
-    <section
-      className="github-section"
-      id="github"
-    >
+    <section className="github-section" id="github">
       <div className="section-container">
 
+        {/* Header */}
         <motion.div
           className="github-header"
           initial={{
@@ -78,9 +61,7 @@ function Github() {
             duration: 0.6,
           }}
         >
-
           <div>
-
             <span className="section-label">
               GitHub
             </span>
@@ -94,13 +75,12 @@ function Github() {
               Explore my projects and development
               work on GitHub.
             </p>
-
           </div>
 
           <a
             href="https://github.com/Prerana1505"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="github-profile-button"
           >
             <FiGithub />
@@ -109,11 +89,9 @@ function Github() {
 
             <FiExternalLink />
           </a>
-
         </motion.div>
 
         {/* Loading */}
-
         {loading && (
           <div className="github-status">
             Loading repositories...
@@ -121,7 +99,6 @@ function Github() {
         )}
 
         {/* Error */}
-
         {!loading && error && (
           <div className="github-status">
             Unable to load GitHub repositories.
@@ -130,7 +107,7 @@ function Github() {
             <a
               href="https://github.com/Prerana1505"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
             >
               View GitHub profile
             </a>
@@ -138,84 +115,80 @@ function Github() {
         )}
 
         {/* Repositories */}
-
         {!loading &&
           !error &&
           repositories.length > 0 && (
             <div className="github-repositories">
 
-              {repositories.map(
-                (repository, index) => (
-                  <motion.a
-                    href={repository.html_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="github-repository"
-                    key={repository.name}
-                    initial={{
-                      opacity: 0,
-                      y: 25,
-                    }}
-                    whileInView={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    viewport={{
-                      once: true,
-                      amount: 0.15,
-                    }}
-                    transition={{
-                      duration: 0.5,
-                      delay: index * 0.08,
-                    }}
-                    whileHover={{
-                      y: -5,
-                    }}
-                  >
+              {repositories.map((repository, index) => (
+                <motion.a
+                  href={repository.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="github-repository"
+                  key={repository.id}
+                  initial={{
+                    opacity: 0,
+                    y: 25,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  viewport={{
+                    once: true,
+                    amount: 0.15,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.08,
+                  }}
+                  whileHover={{
+                    y: -5,
+                  }}
+                >
 
-                    <div className="repository-top">
+                  <div className="repository-top">
+                    <FiGithub />
+                    <FiArrowUpRight />
+                  </div>
 
-                      <FiGithub />
+                  <h3>
+                    {repository.name}
+                  </h3>
 
-                      <FiArrowUpRight />
+                  <p>
+                    {repository.description ||
+                      "No description available."}
+                  </p>
 
-                    </div>
+                  <div className="repository-technologies">
 
-                    <h3>
-                      {repository.name}
-                    </h3>
-
-                    <p>
-                      {repository.description}
-                    </p>
-
-                    <div className="repository-technologies">
-
-                      {repository.language && (
-                        <span>
-                          {repository.language}
-                        </span>
-                      )}
-
+                    {repository.language && (
                       <span>
-                        <FiStar />
-                        {repository.stars}
+                        {repository.language}
                       </span>
+                    )}
 
-                      <span>
-                        <FiGitBranch />
-                        {repository.forks}
-                      </span>
+                    <span>
+                      <FiStar />
+                      {repository.stargazers_count}
+                    </span>
 
-                    </div>
+                    <span>
+                      <FiGitBranch />
+                      {repository.forks_count}
+                    </span>
 
-                  </motion.a>
-                )
-              )}
+                  </div>
+
+                </motion.a>
+              ))}
 
             </div>
           )}
 
+        {/* No repositories */}
         {!loading &&
           !error &&
           repositories.length === 0 && (
