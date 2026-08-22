@@ -1,6 +1,6 @@
 import http from "http";
 
-const PORT = process.env.PORT || 5000;
+
 const sendJSON = (res, statusCode, data) => {
   res.writeHead(statusCode, {
     "Content-Type": "application/json",
@@ -10,7 +10,7 @@ const sendJSON = (res, statusCode, data) => {
 };
 
 const server = http.createServer(async(req, res) => {
-    console.log("Request:", req.method, req.url);
+    console.log("REQUEST:", req.method, req.url);
 
   // CORS
   res.setHeader(
@@ -32,6 +32,19 @@ const server = http.createServer(async(req, res) => {
   if (req.method === "OPTIONS") {
     res.writeHead(204);
     res.end();
+    return;
+  }
+   // --------------------------------
+  // ROOT TEST ROUTE
+  // --------------------------------
+
+  if (req.method === "GET" && req.url === "/") {
+    sendJSON(res, 200, {
+      success: true,
+      message: "PRERANA PORTFOLIO BACKEND IS LIVE",
+      version: "2.0",
+    });
+
     return;
   }
 
@@ -193,18 +206,16 @@ if (
 
   return;
 }
-// --------------------------------
+
+  // --------------------------------
   // Root route
   // --------------------------------
 
-  if (
-    req.method === "GET" &&
-    req.url === "/"
-  ) {
+  if (req.method === "GET" && req.url === "/") {
     sendJSON(res, 200, {
       success: true,
-      message: "Portfolio backend is running!",
-      api: "/api",
+      message: "PRERANA PORTFOLIO BACKEND IS LIVE",
+      version: "2.0",
     });
 
     return;
@@ -219,7 +230,7 @@ if (
   });
 
 });
-
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, "0.0.0.0", () => {
   console.log(
     `Backend running on port ${PORT}`

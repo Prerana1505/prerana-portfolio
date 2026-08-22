@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
+
 import {
   FiMail,
   FiGithub,
@@ -8,6 +10,7 @@ import {
 } from "react-icons/fi";
 
 function Contact() {
+  const form = useRef();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,54 +30,42 @@ function Contact() {
     }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+ const handleSubmit = async (event) => {
+  event.preventDefault();
 
-    setStatus("");
-    setLoading(true);
+  setStatus("");
+  setLoading(true);
 
-    try {
-      const response = await fetch(
-        "https://prerana-portfolio.onrender.com/api/contact",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || "Something went wrong."
-        );
+  try {
+    await emailjs.sendForm(
+      "service_blj7fri",
+      "template_22fjpn7",
+      form.current,
+      {
+        publicKey: "emxtZuQpJfv8r4Jc8",
       }
+    );
 
-      setStatus(
-        "Your message was sent successfully!"
-      );
+    setStatus(
+      "Your message was sent successfully!"
+    );
 
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      });
-    } catch (error) {
-      console.error(error);
+    setFormData({
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    });
+  } catch (error) {
+    console.error("EmailJS Error:", error);
 
-      setStatus(
-        "Unable to send your message. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    setStatus(
+      "Unable to send your message. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section
@@ -202,6 +193,7 @@ function Contact() {
           {/* Contact form */}
 
           <motion.form
+             ref={form}
             className="contact-form"
             onSubmit={handleSubmit}
             initial={{
